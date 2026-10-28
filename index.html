@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Beveridge-Kurve – Kreuzworträtsel</title>
+<style>
+:root{color-scheme:light dark;--bg:#eef2f7;--fg:#14213d;--mut:#5b6678;--card:#fff;--line:#b9c3d3;--hl:#d6e4ff;--cur:#ffd75e;--ok:#c6efd0;--bad:#ffcfcf;--acc:#14213d;--accfg:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151f;--fg:#e6ebf5;--mut:#9aa6bb;--card:#1b2332;--line:#3a465c;--hl:#2a3d66;--cur:#8a6d0b;--ok:#1f5a33;--bad:#6b2a2a;--acc:#e6ebf5;--accfg:#10151f}}
+:root[data-theme="dark"]{--bg:#10151f;--fg:#e6ebf5;--mut:#9aa6bb;--card:#1b2332;--line:#3a465c;--hl:#2a3d66;--cur:#8a6d0b;--ok:#1f5a33;--bad:#6b2a2a;--acc:#e6ebf5;--accfg:#10151f}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font:16px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;padding:16px 12px 32px}
+main{max-width:640px;margin:0 auto}
+h1{font:700 1.5rem/1.2 Georgia,"Times New Roman",serif;margin:0 0 4px}
+.sub{color:var(--mut);margin:0 0 14px}
+#bar{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;min-height:3.4em;margin-bottom:10px}
+.grid{display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:2px;margin:0 auto 12px}
+.cell{position:relative;aspect-ratio:1}
+.cell input{width:100%;height:100%;padding:0;border:1px solid var(--line);border-radius:3px;background:var(--card);color:var(--fg);font:600 16px system-ui,sans-serif;text-align:center;text-transform:uppercase;caret-color:transparent;outline:none}
+.cell.hl input{background:var(--hl)}.cell.cur input{background:var(--cur)}.cell.ok input{background:var(--ok)}.cell.bad input{background:var(--bad)}
+.cell input:focus-visible{outline:2px solid var(--fg);outline-offset:-2px}
+.num{position:absolute;top:1px;left:2px;font-size:8px;line-height:1;color:var(--mut);pointer-events:none}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+button{font:600 15px system-ui,sans-serif;padding:9px 14px;border-radius:8px;border:1px solid var(--acc);background:var(--acc);color:var(--accfg)}
+button.sec{background:transparent;color:var(--fg)}
+#msg{min-height:1.5em;margin:6px 0 14px;font-weight:600}
+h2{font:700 1.05rem Georgia,serif;margin:16px 0 6px}
+ol{list-style:none;margin:0;padding:0}
+li{padding:6px 8px;border-radius:6px;cursor:pointer}li b{display:inline-block;min-width:1.8em}
+li.on{background:var(--hl)}
+</style></head><body><main>
+<h1>Beveridge-Kurve – Kreuzworträtsel</h1>
+<p class="sub">Tippe ein Feld an und lies oben den Hinweis. Umlaute kommen nicht vor.</p>
+<div id="bar">Wähle ein Feld, um den Hinweis zu sehen.</div>
+<div class="grid" id="grid"></div>
+<div class="btns"><button id="chk">Prüfen</button><button class="sec" id="sol">Lösung zeigen</button><button class="sec" id="rst">Neu starten</button></div>
+<div id="msg" aria-live="polite"></div>
+<h2>Waagerecht</h2><ol id="LA"></ol>
+<h2>Senkrecht</h2><ol id="LD"></ol>
+</main>
+<script>
+const D={"h": 13, "w": 11, "words": [{"a": "REGION", "q": "Arbeitslose und freie Jobs sind in verschiedenen …", "r": 4, "c": 5, "d": "A"}, {"a": "KURVE", "q": "Die Beveridge-… zeigt Arbeitslose und offene Stellen", "r": 0, "c": 6, "d": "D"}, {"a": "STRUKTURELL", "q": "Die Qualifikation der Arbeitslosen passt nicht zu den freien Stellen: … Arbeitslosigkeit", "r": 1, "c": 0, "d": "A"}, {"a": "BOOM", "q": "Starker Aufschwung: viele Jobs, wenig Arbeitslose", "r": 3, "c": 9, "d": "D"}, {"a": "SUCHE", "q": "Arbeitslose brauchen Zeit für die … nach einem Job", "r": 0, "c": 3, "d": "D"}, {"a": "STELLEN", "q": "Offene … (auch Vakanzen genannt)", "r": 1, "c": 0, "d": "D"}, {"a": "REZESSION", "q": "Die Wirtschaft schrumpft und die Arbeitslosigkeit steigt", "r": 4, "c": 5, "d": "D"}, {"a": "BEVERIDGE", "q": "So heißt die Kurve, benannt nach einem britischen Ökonomen", "r": 10, "c": 0, "d": "A"}, {"a": "KONJUNKTUR", "q": "Das Auf und Ab der Wirtschaft", "r": 12, "c": 0, "d": "A"}, {"a": "MISMATCH", "q": "Arbeitslose und freie Stellen passen nicht zusammen (englisch für „Fehlzuordnung“)", "r": 8, "c": 3, "d": "A"}]},R=D.h,C=D.w,cells={},words=D.words;
+words.forEach((w,i)=>{for(let k=0;k<w.a.length;k++){const r=w.r+(w.d=='D'?k:0),c=w.c+(w.d=='A'?k:0),key=r+','+c;(cells[key]=cells[key]||{r,c,ans:w.a[k],w:{}}).w[w.d]=i}});
+const st=words.map((w,i)=>({i,r:w.r,c:w.c})).sort((x,y)=>x.r-y.r||x.c-y.c);
+let n=0,last='';st.forEach(s=>{const k=s.r+','+s.c;if(k!==last){n++;last=k}words[s.i].n=n;cells[k].num=n});
+const grid=document.getElementById('grid'),bar=document.getElementById('bar'),msg=document.getElementById('msg');
+grid.style.setProperty('--cols',C);
+for(let r=0;r<R;r++)for(let c=0;c<C;c++){
+  const d=document.createElement('div'),o=cells[r+','+c];
+  if(o){d.className='cell';d.innerHTML=(o.num?'<span class="num">'+o.num+'</span>':'')+'<input maxlength="2" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Zeile '+(r+1)+', Spalte '+(c+1)+'">';o.el=d;o.in=d.firstChild.nextSibling||d.querySelector('input');
+    o.in.addEventListener('focus',()=>act(r,c));
+    o.in.addEventListener('click',()=>{if(cur&&cur.r==r&&cur.c==c&&o.w.A!==undefined&&o.w.D!==undefined)act(r,c,cur.d=='A'?'D':'A')});
+    o.in.addEventListener('input',e=>{const v=e.target.value.toUpperCase().replace(/[^A-Z]/g,'').slice(-1);e.target.value=v;o.el.classList.remove('ok','bad');if(v)step(1)});
+    o.in.addEventListener('keydown',e=>{const k=e.key;
+      if(k=='Backspace'&&!o.in.value){e.preventDefault();step(-1);const p=cells[cur.r+','+cur.c];p.in.value='';p.el.classList.remove('ok','bad')}
+      else if(k=='ArrowRight')mv(0,1,'A',e);else if(k=='ArrowLeft')mv(0,-1,'A',e);else if(k=='ArrowDown')mv(1,0,'D',e);else if(k=='ArrowUp')mv(-1,0,'D',e)});
+  }else d.className='cell';
+  if(!o)d.style.visibility='hidden';grid.appendChild(d)}
+let cur=null;
+function wc(i){const w=words[i],a=[];for(let k=0;k<w.a.length;k++)a.push((w.r+(w.d=='D'?k:0))+','+(w.c+(w.d=='A'?k:0)));return a}
+function act(r,c,d){const o=cells[r+','+c];d=d||(cur&&cur.d);if(o.w[d]===undefined)d=o.w.A!==undefined?'A':'D';
+  cur={r,c,d};const wi=o.w[d];
+  document.querySelectorAll('.cell').forEach(x=>x.classList.remove('hl','cur'));
+  wc(wi).forEach(k=>cells[k].el.classList.add('hl'));o.el.classList.add('cur');
+  bar.innerHTML='<b>'+words[wi].n+' '+(d=='A'?'Waagerecht':'Senkrecht')+'</b> ('+words[wi].a.length+' Buchstaben): '+words[wi].q;
+  document.querySelectorAll('li').forEach(l=>l.classList.toggle('on',l.dataset.i==wi));
+  if(document.activeElement!==o.in)o.in.focus()}
+function step(s){const wi=cells[cur.r+','+cur.c].w[cur.d],a=wc(wi),i=a.indexOf(cur.r+','+cur.c)+s;if(i>=0&&i<a.length){const[p,q]=a[i].split(',').map(Number);act(p,q,cur.d)}}
+function mv(dr,dc,d,e){e.preventDefault();const o=cells[(cur.r+dr)+','+(cur.c+dc)];if(o)act(o.r,o.c,d)}
+['A','D'].forEach(d=>{const ol=document.getElementById('L'+d);
+  words.map((w,i)=>({w,i})).filter(x=>x.w.d==d).sort((x,y)=>x.w.n-y.w.n).forEach(({w,i})=>{const li=document.createElement('li');li.dataset.i=i;li.innerHTML='<b>'+w.n+'.</b>'+w.q+' <span style="color:var(--mut)">('+w.a.length+')</span>';
+    li.onclick=()=>act(w.r,w.c,d);ol.appendChild(li)})});
+const all=()=>Object.values(cells);
+document.getElementById('chk').onclick=()=>{let ok=0,wrong=0,empty=0;
+  all().forEach(o=>{const v=o.in.value;o.el.classList.remove('ok','bad');if(!v){empty++;return}if(v==o.ans){ok++;o.el.classList.add('ok')}else{wrong++;o.el.classList.add('bad')}});
+  msg.textContent=(wrong==0&&empty==0)?'Geschafft! Alle Felder sind richtig.':ok+' Felder richtig, '+wrong+' falsch, '+empty+' noch leer.'};
+document.getElementById('sol').onclick=()=>{all().forEach(o=>{o.in.value=o.ans;o.el.classList.remove('bad');o.el.classList.add('ok')});msg.textContent='Die Lösung wird angezeigt.'};
+document.getElementById('rst').onclick=()=>{all().forEach(o=>{o.in.value='';o.el.classList.remove('ok','bad')});msg.textContent=''};
+</script></body></html>
